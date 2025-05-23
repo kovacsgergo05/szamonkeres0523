@@ -1,53 +1,75 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dragon Ball karakterek</title>
-</head>
-<body>
-  <h1>Dragon Ball karakterek</h1>
-  <button id="load-button">Karakterek betöltése</button>
-  <div id="character-container"></div>
-
-  <script>
-    async function fetcheles() {
-      const container = document.getElementById("character-container");
-      container.innerHTML = "";
-
-      let url = "https://dragonball-api.com/api/characters?limit=10";
-
-      while (url) {
-        try {
-          const response = await fetch("https://dragonball-api.com/api/characters?limit=10" + url);
-          const result = await response.json();
-
-          result.items.forEach(character => {
-            const div = document.createElement("div");
-            div.className = "character";
-            div.innerHTML = `
-              <h3>${character.name}</h3>
-              <img src="${character.image}">
-              <p>Neme: ${character.gender}</p>
-              <p>Ki: ${character.ki}</p>
-              <p>Max ki: ${character.maxKi}</p>
-              <p>Faj: ${character.race}</p>
-              <p>Leírás:  ${character.description}</p>
-              <p>Hovatartozás: ${character.affiliation}</p>
-            `;
-            container.appendChild(div);
-          });
-
-          url = result.links.next || null;
-
-        } catch (error) {
-          console.error("Hiba történt:", error);
-          break;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Ball</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 1.5rem;
+            background-color:rgb(199, 176, 43);
         }
-      }
-    }
 
-    document.getElementById("load-button").addEventListener("click", fetcheles);
-  </script>
+        img {
+            height: 100%;
+            width: 100%;
+        }
+
+        p {
+            text-align: center;
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            background-color: rgb(89, 90, 86);
+            color: white;
+        }
+
+        h3 {
+            font-style:oblique;
+            background-color: rgb(180, 66, 66);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="text-center mb-4">
+        <h1>Dragon Ball</h1>
+        <button class=" btn btn-primary" onclick="DragonBallkarakterek()">Karakterek</button>
+    </div>
+    <div class="container">
+        <div id="image-container" class="row g-4"></div>
+    </div>
+
+    <script>
+        async function DragonBallkarakterek() {
+            const res = await fetch("https://dragonball-api.com/api/characters?limit=58");
+            const data = await res.json();
+            const container = document.getElementById('image-container');
+            container.innerHTML = '';
+
+            data.items.forEach(character => {
+                const col = document.createElement('div');
+                col.className = 'col-12 col-sm-6 col-md-4 col-lg-3';
+
+                col.innerHTML = `
+                    <div class="card h-100">
+                        <img src="${character.image}" alt="${character.name}">
+                        <div class="card-body text-center">
+                        <h3 class="card-title">${character.name}</h3>
+                        <p>Faj: ${character.race}</p>
+                        <p>Nem: ${character.gender}</p>
+                        <p>Ki: ${character.ki}</p>
+                        <p>Hovatartozas: ${character.affiliation}</p>
+                        <p>MaxKi ${character.maxKi}</p>
+                        <p>Kitörölve: ${character.deletedAt}</p>
+                        <p>Elpusztítva: ${character.isDestroyed}</p>
+                        <p>Leíras: ${character.description}</p>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(col);
+            });
+        }
+    </script>
 </body>
 </html>
